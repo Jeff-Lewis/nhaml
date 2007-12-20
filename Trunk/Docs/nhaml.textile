@@ -1,0 +1,705 @@
+Introducing NHaml - An ASP.NET MVC View Engine
+
+h2. Introduction
+
+NHaml (pronounced enamel) is a pure .NET implementation of the popular Rails
+"Haml":http://haml.hamptoncatlin.com/ view engine. From the Haml website:
+
+<em>
+"Haml is a markup language that‘s used to cleanly and simply describe the XHTML of any web document, 
+without the use of inline code. Haml functions as a replacement for inline page templating systems 
+such as PHP, ERB, and ASP. However, Haml avoids the need for explicitly coding XHTML into the template,
+because it is actually an abstract description of the XHTML, with some code to generate dynamic content."
+</em>
+
+In other words, NHaml is an external DSL for XHTML. It's primary qualities are it's simplicity, terseness,
+performance and that it outputs nicely formatted XHTML. Additionally, the NHaml view engine provides
+support for Rails style layouts and partials - more on that below.
+
+An example is the best way to grok how NHaml works. Below we have a typical view targeting
+the default Web Forms view engine. Observe the proliferation of angle-brackets, closing tags and
+general cruft.
+
+<notextile>
+<em>~/Views/Products/List.aspx</em>
+</notextile>
+
+<pre>
+<%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master" AutoEventWireup="true" 
+    CodeBehind="List.aspx" Inherits="MvcApplication5.Views.Products.List" Title="Products" %>
+<asp:Content ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
+  <h2><%= ViewData.CategoryName %></h2>
+  <ul>
+    <% foreach (var product in ViewData.Products) { %>
+      <li>
+        <%= product.ProductName %> 
+        <div class="editlink">
+          (<%= Html.ActionLink("Edit", new { Action="Edit", ID=product.ProductID })%>)
+        </div>
+      </li>
+    <% } %>
+  </ul>
+  <%= Html.ActionLink("Add New Product", new { Action="New" }) %>
+</asp:Content>  
+</pre>
+
+Now let us bask in the glory of the NHaml version:
+
+<notextile>
+<em>~/Views/Products/List.haml</em>
+</notextile>
+
+<pre>
+%h2= ViewData.CategoryName
+%ul
+  - foreach (var product in ViewData.Products)
+    %li
+      = product.ProductName 
+      .editlink
+        = Html.ActionLink("Edit", new { Action="Edit", ID=product.ProductID })
+= Html.ActionLink("Add New Product", new { Action="New" })
+</pre>
+
+There are a couple of things going on here. First, NHaml uses indentation (2 spaces) as
+an alternative to closing tags. Second, the first non-whitespace character in a line can
+describe how the line should be processed. For example, the first line in the example above starts
+with a '%', which directs NHaml to process that line as an XHTML tag. These directives are called
+Markup Rules and are discussed in detail in the "Reference":#reference section below. 
+
+h2. Using NHaml
+
+Configuring ASP.NET MVC to use NHaml is as simple as referencing _Mindscape.NHaml.ViewEngine.dll_
+and putting the following line at the end of the _Application_Start_ method in the _Global.asax.cs_ file.
+
+<pre lang="csharp">
+ControllerBuilder.Current.SetDefaultControllerFactory(typeof(NHamlControllerFactory));
+</pre>
+
+NHaml view files should have a _.haml_ extension and are placed under the _Views_ project folder in
+the normal manner.
+
+h2. Partials & Layouts
+
+Currently, unlike Rails, the ASP.NET MVC framework delegates layout and partial handling
+to the view engine. Therefore, NHaml provides it's own layout & partial system.
+
+h3. Partials
+
+Partials are small reusable sub-views available within a single controller context. NHaml implements
+a Rails-like partial system. Any view template beginning with an '_' is considered
+a partial. To use a partial simply use the NHaml '_' markup rule like so:
+
+<notextile>
+<em>~/Views/Products/List.haml</em>
+</notextile>
+
+<pre>
+- foreach (var product in ViewData.Products)
+  %li
+    _ Product
+</pre>
+
+In this example NHaml will replace the line "_ Product" with the contents of the file _Product.haml
+in the current controller's view folder (~/Views/Products)
+
+<notextile>
+<em>~/Views/Products/_Product.haml</em>
+</notextile>
+
+<pre>
+= product.ProductName 
+%span.editlink
+  = Html.ActionLink("Edit", new { Action="Edit", ID=product.ProductID })
+</pre>
+
+At compile-time, both layouts and partials are merged into a single view and so any _ViewData_ context
+is available.
+
+h3. Layouts
+
+Layouts are the NHaml equivalent of master pages. NHaml provides a Rails-like layout system.
+Layouts are applied automatically based on the following conventions:
+
+# If a layout is specified through the _masterName_ argument of _RenderView_ then that
+layout is applied.
+# Or, if a layout with the same name as the controller exists in Views\Shared then it
+is applied.
+# Or, if a layout called _Application.haml_ exists in the Views\Shared folder then it
+is applied.
+
+Here is an example layout targeting the Products controller (Views\Shared\Products.haml)
+
+<notextile>
+<em>~/Views/Products/Products.haml</em>
+</notextile>
+
+<pre>
+!!!
+%html{xmlns="http://www.w3.org/1999/xhtml"}
+  %head
+    %title My Sample MVC Application
+    %link{href="../../Content/Sites", rel="stylesheet", type="text/css"}
+  %body
+    #inner
+      #header
+        %h1 My Store Manager - Products Section
+      #menu
+        %ul
+          %li
+            %a{href="/"} Home
+          %li
+            = Html.ActionLink("About Us", "About", "Home")
+          %li
+            = Html.ActionLink("Products", new { Controller = "Products", Action = "Category", ID = 1 })
+      #maincontent
+        _
+      #footer
+</pre>
+
+A layout file uses the _ partial operator with no arguments to signify where view content should
+be inserted into the layout.
+
+h2. Compilation Model
+
+NHaml views are compiled. The first time an NHaml view is requested it is parsed and compiled into a type
+capable of rendering the view. This type is then cached. The view engine can run in two modes:
+development or production. In development mode, the view engine will automatically recompile a cached
+view if any of it's constituent haml files are modified. Production mode may be enabled through the 
+web.config file like so.
+
+<pre lang="xml">
+<configuration>
+	<configSections>
+    <section name="nhamlViewEngine" 
+             type="Mindscape.NHaml.ViewEngine.Configuration.NHamlViewEngineSection, Mindscape.NHaml.ViewEngine" />
+  </configSections>
+  <nhamlViewEngine production="false" />
+</configuration>
+</pre>
+
+h2. ViewData & Helpers
+
+<a name="reference"/>
+
+h2. Reference
+
+Disclaimer: Most of this reference was lifted from the main Haml site.
+
+h3. XHTML Tags
+
+These characters render XHTML tags.
+
+*%*
+
+The percent character is placed at the beginning of a line. It‘s followed immediately
+by the name of an element, then optionally by modifiers (see below), a space, and text
+to be rendered inside the element. It creates an element in the form of <element></element>.
+For example:
+
+<pre>
+%one
+  %two
+    %three Hey there
+</pre>
+
+is compiled to:
+
+<pre>
+<one>
+  <two>
+    <three>Hey there</three>
+  </two>
+</one>
+</pre>
+
+Any string is a valid element name; NHaml will automatically generate opening and closing tags
+for any element.
+
+*{}*
+
+Braces represent a C# 3 anonymous type object initializer statement that is used for specifying the attributes
+of an element. It is evaluated as an anonymous type, so logic will work in it and local variables may be used.
+The braces are placed after the tag is defined. For example:
+
+<pre>
+%head
+  %title My Sample MVC Application
+  %link{ href="../../Content/Sites", rel="stylesheet", type="text/css" }
+</pre>
+
+is compiled to:
+
+<pre>
+<head>
+  <title>My Sample MVC Application</title>
+  <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
+</head>
+</pre>
+
+/
+
+The forward slash character, when placed at the end of a tag definition, causes the tag
+to be self-closed. For example:
+
+<pre>
+%br/
+%meta{'http-equiv' => 'Content-Type', :content => 'text/html'}/
+</pre>
+
+is compiled to:
+
+<pre>
+<br />
+<meta http-equiv="Content-Type" content="text/html" />
+</pre>
+
+Some tags are automatically closed, as long as they have no content. meta, img, link, script,
+br, input and hr tags are closed by default.
+
+<pre>
+%br
+%meta{'http-equiv' => 'Content-Type', :content => 'text/html'}
+</pre>
+
+is also compiled to:
+
+<pre>
+<br />
+<meta http-equiv="Content-Type" content="text/html" />
+</pre>
+
+h3. . and #
+
+The period and pound sign are borrowed from CSS. They are used as shortcuts to specify the class
+and id attributes of an element, respectively. Multiple class names can be specified in a similar
+way to CSS, by chaining the class names together with periods. They are placed immediately after
+the tag and before an attributes hash. For example:
+
+<pre>
+%div#things
+  %span#rice Chicken Fried
+  %p.beans{ food = "true" } The magical fruit
+  %h1.class.otherclass#id La La La
+</pre>
+
+is compiled to:
+
+<pre>
+<div id="things">
+  <span id="rice">Chicken Fried</span>
+  <p class="beans" food="true">The magical fruit</p>
+  <h1 class="class otherclass" id="id">La La La</h1>
+</div>
+</pre>
+
+And,
+
+<pre>
+#content
+  .articles
+    .article.title
+      Doogie Howser Comes Out
+    .article.date
+      2006-11-05
+    .article.entry
+      Neil Patrick Harris would like to dispel any rumors that he is straight
+</pre>
+
+is compiled to:
+
+<pre>
+<div id="content">
+  <div class="articles">
+    <div class="article title">Doogie Howser Comes Out</div>
+    <div class="article date">2006-11-05</div>
+    <div class="article entry">
+      Neil Patrick Harris would like to dispel any rumors that he is straight
+    </div>
+  </div>
+</div>
+</pre>
+
+h3. Implicit Div Elements
+
+Because the div element is used so often, it is the default element. If you only define
+a class and/or id using the . or # syntax, a div element is automatically used. For example:
+
+<pre>
+#collection
+  .item
+    .description What a cool item!
+</pre>
+
+is the same as:
+
+<pre>
+%div{:id => collection}
+  %div{:class => 'item'}
+    %div{:class => 'description'} What a cool item!
+</pre>
+
+and is compiled to:
+
+<pre>
+<div id='collection'>
+  <div class='item'>
+    <div class='description'>What a cool item!</div>
+  </div>
+</div>
+</pre>
+
+h3. =
+
+= is placed at the end of a tag definition, after class, id, and attribute declarations.
+It‘s just a shortcut for inserting Ruby code into an element. It works the same as = without a
+tag: it inserts the result of the Ruby code into the template.
+
+<pre>
+%p= string.Join(" ", new string[]{"He", "braid", "runner!"})
+</pre>
+
+It‘s compiled to:
+
+<pre>
+<p>He braid runner!</p>
+</pre>
+
+h3. No Special Character
+
+If no special character appears at the beginning of a line, the line is rendered
+as plain text. For example:
+
+<pre>
+%gee
+  %whiz
+    Wow this is cool!
+</pre>
+
+is compiled to:
+
+<pre>
+<gee>
+  <whiz>
+    Wow this is cool!
+  </whiz>
+</gee>
+</pre>
+
+h3. !!!
+
+When describing XHTML documents with Haml, you can have a document type or XML
+prolog generated automatically by including the characters !!!. For example:
+
+<pre>
+!!! XML
+!!!
+%html
+  %head
+    %title Myspace
+  %body
+    %h1 I am the international space station
+    %p Sign my guestbook
+</pre>
+
+is compiled to:
+
+<pre>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Myspace</title>
+  </head>
+  <body>
+    <h1>I am the international space station</h1>
+    <p>Sign my guestbook</p>
+  </body>
+</html>
+</pre>
+
+You can also specify the version and type of XHTML after the !!!. XHTML 1.0 Strict, Transitional, 
+and Frameset and XHTML 1.1 are supported. The default version is 1.0 and the default type is
+Transitional. For example:
+
+<pre>
+!!! 1.1
+</pre>
+
+is compiled to:
+
+<pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+</pre>
+
+and
+
+<pre>
+!!! Strict
+</pre>
+
+is compiled to:
+
+<pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+</pre>
+
+If you‘re not using the UTF-8 characterset for your document, you can specify which encoding
+should appear in the XML prolog in a similar way. For example:
+
+<pre>
+!!! XML iso-8859-1
+</pre>
+
+is compiled to:
+
+<pre>
+<?xml version="1.0" encoding="iso-8859-1" ?>
+</pre>
+
+h3. /
+
+The forward slash character, when placed at the beginning of a line, wraps all text after it
+in an HTML comment. For example:
+
+<pre>
+%billabong
+  / This is the billabong element
+  I like billabongs!
+</pre>
+
+is compiled to:
+
+<pre>
+<billabong>
+  <!-- This is the billabong element -->
+  I like billabongs!
+</billabong>
+</pre>
+
+The forward slash can also wrap indented sections of code. For example:
+
+<pre>
+/
+  %p This doesn't render...
+  %div
+    %h1 Because it's commented out!
+</pre>
+
+is compiled to:
+
+<pre>
+<!--
+  <p>This doesn't render...</p>
+  <div>
+    <h1>Because it's commented out!</h1>
+  </div>
+-->
+</pre>
+
+You can also use Internet Explorer conditional comments (about) by enclosing the condition in square brackets after the /. For example:
+
+<pre>
+/[if IE]
+  %a{ :href => 'http://www.mozilla.com/en-US/firefox/' }
+    %h1 Get Firefox
+</pre>
+
+is compiled to:
+
+<pre>
+<!--[if IE]>
+  <a href='http://www.mozilla.com/en-US/firefox/'>
+    <h1>Get Firefox</h1>
+  </a>
+<![endif]-->
+</pre>
+
+h3. \
+
+The backslash character escapes the first character of a line, allowing use of otherwise interpreted characters as plain text. For example:
+
+<pre>
+%title
+  = @title
+  \- MySite
+</pre>
+
+is compiled to:
+
+<pre>
+<title>
+  MyPage
+  - MySite
+</title>
+</pre>
+
+h3. |
+
+The pipe character designates a multiline string. It‘s placed at the end of a line and means that
+all following lines that end with | will be evaluated as though they were on the same line. For example:
+
+<pre>
+%whoo
+  %hoo I think this might get |
+    pretty long so I should |
+    probably make it |
+    multiline so it doesn't |
+    look awful. |
+  %p This is short.
+</pre>
+
+is compiled to:
+
+<pre>
+<whoo>
+  <hoo>
+    I think this might get pretty long so I should probably make it multiline so it doesn't look awful.
+  </hoo>
+  <p>This is short</p>
+</whoo>
+</pre>
+
+h2. Partials & Layouts (_)
+
+Use an underscore to render a partial or the content of a layout. For a partial,
+specify the name of the partial after the underscore like so:
+
+<pre>
+%p
+  _ Customer
+</pre>
+
+will render the __Customer.haml partial file.
+
+An '_' with on it's own is used to specify where the content within a layout will
+be inserted:
+
+<pre>
+%p
+  _
+</pre>
+
+h2. C# Evaluators =,-
+
+h3. =
+
+The equals character is followed by C# code, which is evaluated and the output
+inserted into the document as plain text. For example:
+
+<pre>
+%p
+  = ['hi', 'there', 'reader!'].join " "
+  = "yo"
+</pre>
+
+is compiled to:
+
+<pre>
+<p>
+  hi there reader!
+  yo
+</p>
+</pre>
+
+You can also use two equal signs, ==, along with conventional Ruby string-embedding
+syntax to easily embed Ruby code in otherwise static text. For example:
+
+  %p
+    == 1 + 1 = #{1 + 1}
+
+is compiled to:
+
+  <p>
+    1 + 1 = 2
+  </p>
+
+-
+
+The hyphen character makes the text following it into "silent script": Ruby script that
+is evaluated, but not output.
+
+It is not recommended that you use this widely; almost all processing code and logic
+should be restricted to the Controller, the Helper, or partials.
+
+For example:
+
+  - foo = "hello"
+  - foo << " there"
+  - foo << " you!"
+  %p= foo
+
+is compiled to:
+
+  <p>
+    hello there you!
+  </p>
+
+h3. Code Blocks
+
+C# code blocks, like XHTML tags, don‘t need to be explicitly closed in NHaml. Rather, they‘re automatically
+closed, based on indentation. A block begins whenever the indentation is increased after a silent script
+command. It ends when the indentation decreases.
+
+<pre>
+- (42...47).each do |i|
+  %p= i
+%p See, I can count!
+</pre>
+
+is compiled to:
+
+  <p>
+    42
+  </p>
+  <p>
+    43
+  </p>
+  <p>
+    44
+  </p>
+  <p>
+    45
+  </p>
+  <p>
+    46
+  </p>
+
+Another example:
+
+  %p
+    - case 2
+    - when 1
+      = "1!"
+    - when 2
+      = "2?"
+    - when 3
+      = "3."
+
+is compiled to:
+
+  <p>
+    2?
+  </p>
+
+h3. -//
+
+The hyphen followed immediately by a C# comment has the effect of a silent comment.
+Any text following this isn‘t rendered in the resulting document at all.
+
+For example:
+
+<pre>
+%p foo 
+  -// This is a comment %p bar
+</pre>
+
+is compiled to:
+
+<pre>
+<p>
+  foo
+</p>
+</pre>
+
+
+

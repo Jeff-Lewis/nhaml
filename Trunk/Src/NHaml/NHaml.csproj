@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F213E7BF-97C5-43BD-8F62-ADA128DCEB4F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mindscape.NHaml</RootNamespace>
+    <AssemblyName>Mindscape.NHaml</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\NHaml.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRules>-Microsoft.Design#CA1020;-Microsoft.Naming#CA1704</CodeAnalysisRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRules>-Microsoft.Design#CA1020;-Microsoft.Naming#CA1704</CodeAnalysisRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="BlockClosingAction.cs" />
+    <Compile Include="TypeBuilder.cs" />
+    <Compile Include="IAttributeEvaluator.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Exceptions\ViewCompilationException.cs" />
+    <Compile Include="TemplateCompiler.cs" />
+    <Compile Include="ICompiledView.cs" />
+    <Compile Include="Rules\ClassMarkupRule.cs" />
+    <Compile Include="Rules\CommentMarkupRule.cs" />
+    <Compile Include="Rules\PartialMarkupRule.cs" />
+    <Compile Include="Rules\EscapeMarkupRule.cs" />
+    <Compile Include="Rules\EofMarkupRule.cs" />
+    <Compile Include="CompilationContext.cs" />
+    <Compile Include="Rules\SilentEvalMarkupRule.cs" />
+    <Compile Include="Rules\EvalMarkupRule.cs" />
+    <Compile Include="Rules\IdMarkupRule.cs" />
+    <Compile Include="Rules\TagMarkupRule.cs" />
+    <Compile Include="Rules\NullMarkupRule.cs" />
+    <Compile Include="Rules\DocTypeMarkupRule.cs" />
+    <Compile Include="InputLine.cs" />
+    <Compile Include="MarkupRule.cs" />
+    <Compile Include="Utilities\StringSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ViewBuilder.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\SyntaxException.cs" />
+    <Compile Include="Utilities\Invariant.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\StringUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\NHaml.snk">
+      <Link>Properties\NHaml.snk</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,5 @@
+%h2= ViewData.CategoryName
+%ul
+  - foreach (var product in ViewData.Products)
+    _ Product
+= Html.ActionLink("Add New Product", new { Action="New" })
