@@ -2,14 +2,14 @@
 
 To upgrade from the MvcContrib version of NHaml:
 
-# Remove references to MvcContrib and the NHamlViewEngine
-# Add a reference to NHaml.dll and NHaml.Web.MVC.dll
-# In your global.asax add a using statement for NHaml.Web.MVC
-# The same factory setting will work:
+ # Remove references to MvcContrib and the NHamlViewEngine
+ # Add a reference to NHaml.dll and NHaml.Web.MVC.dll
+ # In your global.asax add a using statement for NHaml.Web.MVC
+ # The same factory setting will work:
               ControllerBuilder.Current.SetControllerFactory(typeof(NHamlControllerFactory));
 
-# If you have setup a configuration section, change the section tag to the following:
+ # If you have setup a configuration section, change the section tag to the following:
      <section name="nhaml" type="NHaml.Configuration.NHamlSection, NHaml"/>
-# In your actual section, rename it to "nhaml" and remove the "views" grouping tag.
+ # In your actual section, rename it to "nhaml" and remove the "views" grouping tag.
 
 Done!
