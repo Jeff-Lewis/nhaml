@@ -1,4 +1,6 @@
-Finally, we can apply RESTful conventions to link helpers too. Here are a few examples of some NHaml ActionLink helpers that work using REST conventions.
+#summary link helpers allow the use of RESTful conventions
+
+Here are a few examples of some NHaml ActionLink helpers that work using REST conventions.
 {{{
 = Html.ActionLink<CategoriesController>() // /categories
 = Html.ActionLink<CategoriesController>(RestfulAction.New, "Add Category") // /categories/new
