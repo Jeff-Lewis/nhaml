@@ -1,3 +1,5 @@
+#summary An introduction into the NHaml markup syntax.
+
 Disclaimer: Most of this reference was lifted from the main Haml site.
 
 =Tags '%'=
