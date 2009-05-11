@@ -55,4 +55,4 @@ Here is an example layout targeting the Products controller (Views/Shared/Produc
 }}}
 A layout file uses the  '`_`' partial operator with no arguments to signify where view content should be inserted into the layout.
 
-Source from http://andrewpeters.net/category/nhaml/page/3/
+Source from http://andrewpeters.net/2007/12/19/introducing-nhaml-an-aspnet-mvc-view-engine/
