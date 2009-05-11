@@ -1,4 +1,4 @@
-# Block Methods are helper methods that accept a block of NHaml markup as a final argument.
+Block Methods are helper methods that accept a block of NHaml markup as a final argument.
 
 An example (albeit contrived) to demonstrate:
 
