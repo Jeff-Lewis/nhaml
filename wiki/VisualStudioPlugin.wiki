@@ -1,3 +1,5 @@
+#summary NHaml syntax highlighting add-in for Visual Studio.
+
 Dave Newman has created a cool NHaml syntax highlighting add-in for Visual Studio.
 
 http://sentia.com.au/2008/05/i-love-haml-but-i.html
