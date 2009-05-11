@@ -2,7 +2,7 @@ Currently, unlike Rails, the ASP.NET MVC framework delegates layout and partial 
 
 =Partials=
 
-Partials are small reusable sub-views available within a single controller context. NHaml implements a Rails-like partial system. Any view template beginning with an '`*`' is considered a partial. To use a partial simply use the NHaml '`*`' markup rule like so:
+Partials are small reusable sub-views available within a single controller context. NHaml implements a Rails-like partial system. Any view template beginning with an '`_`' is considered a partial. To use a partial simply use the NHaml '`_`' markup rule like so:
 
 ~/Views/Products/List.haml
 
