@@ -2,11 +2,10 @@ NHaml views are compiled. The first time an NHaml view is requested it is parsed
 
 {{{
 <configuration>
-    <configSections>
-    <section name="nhamlViewEngine" 
-             type="Mindscape.NHaml.ViewEngine.Configuration.NHamlViewEngineSection, Mindscape.NHaml.ViewEngine" />
+  <configSections>
+    <section name="nhaml" type="NHaml.Configuration.NHamlConfigurationSection, NHaml"/>
   </configSections>
-  <nhamlViewEngine autoRecompile="true" />
+  <nhaml autoRecompile="true"/>
 </configuration>
 }}}
 
