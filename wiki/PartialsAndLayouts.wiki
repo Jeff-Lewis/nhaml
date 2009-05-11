@@ -12,7 +12,7 @@ Partials are small reusable sub-views available within a single controller conte
     _ Product
 }}}
 
-In this example NHaml will replace the line "`_` Product" with the contents of the file _Product.haml in the current controller”s view folder (~/Views/Products)
+In this example NHaml will replace the line "`_` Product" with the contents of the file _Product.haml in the current controller's view folder `(`~/Views/Products`)`
 
 ~/Views/Products/_Product.haml
 
