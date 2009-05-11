@@ -1,3 +1,4 @@
+#summary How to get NHaml
 There are several options for getting NHaml
 
 ==From the downloads page==
