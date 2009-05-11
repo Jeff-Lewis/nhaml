@@ -1,0 +1,67 @@
+#summary One-sentence summary of this page.
+
+Using a Block Method we can create a nice Rails-style helper that encapsulates building a form for a single model:
+
+{{{
+- var product = new Product { ProductName="Soap on a Rope" }
+- Html.Form(product) (f) =>
+  = f.Label(p => p.ProductName)
+  = f.TextField(p => p.ProductName)
+  %br
+  = f.Label(p => p.UnitPrice)
+  = f.TextField(p => p.UnitPrice)
+  %p
+    = Html.SubmitButton()
+}}}
+Results in:
+
+{{{
+<form action="/products.mvc/create" method="post">
+  <label for="Product.ProductName">Product Name</label>
+  <input type="text" name="Product.ProductName" id="Product.ProductName" value="" />
+  <br />
+  <label for="Product.UnitPrice">Unit Price</label>
+  <input type="text" name="Product.UnitPrice" id="Product.UnitPrice" value="" />
+  <p>
+    <input type="submit" />
+  </p>
+</form>
+}}}
+A couple of things to note here:
+
+Our Form method takes a model object and uses the conventions of REST to generate the target action. To make this work our model needs to implement a small interface: IModel: 
+{{{
+public interface IModel
+{
+  int Id { get; }
+  bool IsNew { get; }
+}
+}}}
+Happily, we can bind our model attributes in a strongly typed fashion using Expressions. 
+Here’s what our Form method looks like:
+
+{{{
+public virtual void Form<TModel>(TModel model, Action<FormBuilder<TModel>> yield)
+  where TModel : IModel
+{
+  // this should be pluggable
+  var formBuilder = new FormBuilder<TModel>(model, this, _outputWriter);
+ 
+  formBuilder.OpenTag(FormMethod.Post, new RouteValueDictionary());
+  yield(formBuilder);
+  formBuilder.CloseTag();
+}
+}}}
+
+= RESTful Link Helpers =
+Finally, we can apply RESTful conventions to link helpers too. Here are a few examples of some NHaml ActionLink helpers that work using REST conventions.
+{{{
+= Html.ActionLink<CategoriesController>() // /categories
+= Html.ActionLink<CategoriesController>(RestfulAction.New, "Add Category") // /categories/new
+= Html.ActionLink(category)  // /categories/show/42
+= Html.ActionLink(category, RestfulAction.Edit, "Edit Category") // /categories/edit/42
+= Html.ActionLink(category, RestfulAction.Destroy, "Delete Category") // /categories/destroy/42
+}}}
+
+
+Source from http://andrewpeters.net/2008/08/21/nhaml-block-methods-and-restful-helpers/
