@@ -1,5 +1,7 @@
 Currently, unlike Rails, the ASP.NET MVC framework delegates layout and partial handling to the view engine. Therefore, NHaml provides it’s own layout & partial system.
 
+* Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
 =Partials=
 
 Partials are small reusable sub-views available within a single controller context. NHaml implements a Rails-like partial system. Any view template beginning with an '`_`' is considered a partial. To use a partial simply use the NHaml '`_`' markup rule like so:
