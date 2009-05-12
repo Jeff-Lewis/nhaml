@@ -489,7 +489,9 @@ is compiled to:
 }}}
 
 =Silent Comments '-//'=
-The hyphen followed immediately by a C# comment has the effect of a silent comment. Any text following this isn‘t rendered in the resulting document at all.For example:
+The hyphen followed immediately by a C# comment has the effect of a silent comment. Any text following this isn‘t rendered in the resulting document at all.
+
+For example:
 
 {{{
 %p foo 
@@ -503,5 +505,6 @@ is compiled to:
   foo
 </p>
 }}
+
 
 Source from http://andrewpeters.net/2007/12/19/introducing-nhaml-an-aspnet-mvc-view-engine/#reference
