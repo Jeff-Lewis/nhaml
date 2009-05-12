@@ -28,6 +28,31 @@ Any string is a valid element name; NHaml will automatically generate opening an
 
 =Attributes "{}"=
 
+==NHaml 2.0 Beta 1 Syntax==
+
+Braces represent the .net anonymous type object initializer statement that is used for specifying the attributes of an element. It is evaluated as an anonymous type, so
+logic will work in it and local variables may be used. The braces are placed after the tag is defined. For example if you are using the C# anonymous syntax:
+
+{{{
+%head
+  %title My Sample MVC Application
+  %link{ href="../../Content/Sites", rel="stylesheet", type="text/css" }
+}}}
+
+is compiled to:
+
+{{{
+<head>
+  <title>My Sample MVC Application</title>
+  <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
+</head>
+}}}
+
+
+==NHaml 2.0 Beta 2 Syntax==
+
+In Beta 2 the attribute syntax has been brough inline with where the next version haml.
+
 Braces represent a HTML style of attribute of an element with a few special syntax.
   * quoted values are interpreted as strings
   * single and double quotes area allowed
