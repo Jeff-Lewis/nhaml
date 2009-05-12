@@ -1,5 +1,7 @@
 #summary Controlling the recompilation of templates.
 
+* Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
 NHaml views are compiled. The first time an NHaml view is requested it is parsed and compiled into a .NET Type capable of rendering the view. This Type is then cached. The view engine can then be set to autoRecompile. When autoRecompile is set to true the view engine will always recompile a view . When autoRecompile is set to false the view engine will only recompile a cached view if any of it's constituent haml files are modified. autoRecompile may be enabled through the web.config file like so:
 
 {{{
