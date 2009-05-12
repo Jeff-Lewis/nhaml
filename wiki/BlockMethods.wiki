@@ -1,5 +1,7 @@
 #summary Block Methods are helper methods that accept a block of NHaml markup as a final argument.
 
+* Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
 An example (albeit contrived) to demonstrate:
 
 {{{
