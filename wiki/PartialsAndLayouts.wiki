@@ -1,4 +1,4 @@
-# summary Layout and Partial views.
+#summary Layout and Partial views.
 
 * Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
 
