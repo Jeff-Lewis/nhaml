@@ -92,7 +92,7 @@ The '/' character, when placed at the end of a tag definition, causes the tag to
 
 {{{
 %br/
-%meta{ http_equiv="Content-Type" content="text/html"}/
+%meta{ http-equiv="Content-Type" content="text/html"}/
 }}}
 
 is compiled to:
@@ -106,7 +106,7 @@ Some tags are automatically closed, as long as they have no content. meta, img, 
 
 {{{
 %br
-%meta{ http_equiv="Content-Type" content="text/html" }
+%meta{ http-equiv="Content-Type" content="text/html" }
 }}}
 
 is also compiled to:
