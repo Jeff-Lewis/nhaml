@@ -1,4 +1,4 @@
-#summay NHaml, pronounced enamel, is a pure .NET implementation of the popular Rails Haml view engine. 
+#summary NHaml (pronounced enamel) is a pure .NET implementation of the popular Rails Haml view engine.
 
 * Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
 
