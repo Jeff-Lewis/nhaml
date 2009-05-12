@@ -504,7 +504,7 @@ is compiled to:
 <p>
   foo
 </p>
-}}
+}}}
 
 
 Source from http://andrewpeters.net/2007/12/19/introducing-nhaml-an-aspnet-mvc-view-engine/#reference
