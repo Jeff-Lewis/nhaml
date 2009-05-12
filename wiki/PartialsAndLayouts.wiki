@@ -1,6 +1,8 @@
-Currently, unlike Rails, the ASP.NET MVC framework delegates layout and partial handling to the view engine. Therefore, NHaml provides it’s own layout & partial system.
+# summary Layout and Partial views.
 
 * Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
+Currently, unlike Rails, the ASP.NET MVC framework delegates layout and partial handling to the view engine. Therefore, NHaml provides it’s own layout & partial system.
 
 =Partials=
 
