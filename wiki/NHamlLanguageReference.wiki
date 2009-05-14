@@ -60,6 +60,7 @@ Braces represent a HTML style of attribute of an element with a few special synt
   * single and double quotes area allowed
   * unquotes values (without spaces) are interpreted as code
   * the syntax #{...} inside quoted values are interpreted as code. so this effectively allows you to inline code and concatenate it with text.
+  * *No commas required for separation*
 
 {{{
 a                       output is a="a"
