@@ -62,7 +62,7 @@ Braces represent a HTML style of attribute of an element with a few special synt
   * the syntax #{...} inside quoted values are interpreted as code. so this effectively allows you to inline code and concatenate it with text.
 
 {{{
-a                       output is a="true"
+a                       output is a="a"
 a = b                   output is a="[value of variable b]"
 a = "b"                 output is a="b"
 a = 'b'                 output is a="b"
