@@ -317,9 +317,9 @@ The forward slash can also wrap indented sections of code. For example:
 
 {{{
 /
-  %p This doesn"t render...
+  %p This doesn't render...
   %div
-    %h1 Because it"s commented out!
+    %h1 Because it's commented out!
 }}}
 
 is compiled to:
@@ -327,7 +327,7 @@ is compiled to:
 {{{
 <!--
   <p>
-This doesn"t render...</p>
+This doesn't render...</p>
   <div>
     <h1>Because it"s commented out!</h1>
   </div>
