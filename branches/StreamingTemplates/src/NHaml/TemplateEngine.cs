@@ -309,7 +309,7 @@ namespace NHaml
 
             foreach (var layoutTemplatePath in layoutTemplateContentProviders)
             {
-                templateCacheKey.AppendFormat("{0}, ", layoutTemplatePath);
+                templateCacheKey.AppendFormat("{0}, ", layoutTemplatePath.Key);
             }
 
             CompiledTemplate compiledTemplate;
