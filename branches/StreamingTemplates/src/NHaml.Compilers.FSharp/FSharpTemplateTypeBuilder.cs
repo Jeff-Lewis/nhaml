@@ -8,18 +8,16 @@ using Microsoft.FSharp.Compiler.CodeDom;
 
 namespace NHaml.Compilers.FSharp
 {
-    internal class FSharpTemplateTypeBuilder
+    internal class FSharpTemplateTypeBuilder: ITemplateTypeBuilder
     {
         private readonly CompilerParameters _compilerParameters
             = new CompilerParameters();
 
-        private readonly TemplateEngine _templateEngine;
 
         [SuppressMessage( "Microsoft.Security", "CA2122" )]
-        public FSharpTemplateTypeBuilder( TemplateEngine templateEngine )
+        public FSharpTemplateTypeBuilder(  )
         {
             ProviderOptions = new Dictionary<string, string>();
-            _templateEngine = templateEngine;
 
             ProviderOptions.Add( "CompilerVersion", "v2.0" );
 
@@ -64,7 +62,7 @@ namespace NHaml.Compilers.FSharp
             _compilerParameters.ReferencedAssemblies.Clear();
             //_compilerParameters.ReferencedAssemblies.Add()
 
-            foreach( var assembly in _templateEngine.References )
+            foreach( var assembly in References )
             {
                 _compilerParameters.ReferencedAssemblies.Add( assembly );
             }
@@ -76,7 +74,7 @@ namespace NHaml.Compilers.FSharp
 
             sourceBuilder.AppendLine("#light ");
             sourceBuilder.AppendLine("namespace TempNHamlNamespace");
-            foreach( var usingStatement in _templateEngine.Usings )
+            foreach( var usingStatement in Usings )
             {
                 sourceBuilder.AppendLine( "open " + usingStatement);
             }
@@ -85,5 +83,8 @@ namespace NHaml.Compilers.FSharp
 
             Source = sourceBuilder.ToString();
         }
+
+        public IList<string> Usings { get; set; }
+        public IList<string> References { get; set; }
     }
 }

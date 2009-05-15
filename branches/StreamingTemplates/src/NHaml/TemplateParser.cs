@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
-
 using NHaml.Compilers;
 using NHaml.Rules;
-using NHaml.Utils;
 
 namespace NHaml
 {
@@ -15,24 +12,24 @@ namespace NHaml
 
         public TemplateParser( 
             TemplateEngine templateEngine, TemplateClassBuilder templateClassBuilder,
-            IList<string> layoutPaths, string templatePath2)
+            IList<ITemplateContentProvider> layoutProviders, ITemplateContentProvider templateContentProvider)
         {
             BlockClosingActions = new Stack<BlockClosingAction>();
-            InputFiles = new StringSet();
+            InputFiles = new Dictionary<string, ITemplateContentProvider>();
             TemplateEngine = templateEngine;
             TemplateClassBuilder = templateClassBuilder;
-            TemplatePath = templatePath2;
-            MergedTemplatePaths = new List<string>();
-            MergedTemplatePaths.AddRange(layoutPaths);
-            MergedTemplatePaths.Add(templatePath2);
+            TemplateContentProvider = templateContentProvider;
+            MergedTemplatePaths = new List<ITemplateContentProvider>();
+            MergedTemplatePaths.AddRange(layoutProviders);
+            MergedTemplatePaths.Add(templateContentProvider);
 
             Meta = new Dictionary<string, string>();
 
-            foreach (var layoutPath in layoutPaths)
+            foreach (var layoutPath in layoutProviders)
             {
-                InputFiles.Add(layoutPath);
+                InputFiles.Add(layoutPath.Key, layoutPath);
             }
-            InputFiles.Add(templatePath2);
+            InputFiles.Add(templateContentProvider.Key,templateContentProvider);
 
             if (TemplateEngine.UseTabs)
             {
@@ -49,11 +46,11 @@ namespace NHaml
         public TemplateEngine TemplateEngine { get; private set; }
 
         public TemplateClassBuilder TemplateClassBuilder { get; private set; }
-        public string TemplatePath { get; private set; }
+        public ITemplateContentProvider TemplateContentProvider { get; private set; }
 
-        public List<string> MergedTemplatePaths { get; private set; }
+        public List<ITemplateContentProvider> MergedTemplatePaths { get; private set; }
 
-        public StringSet InputFiles { get; private set; }
+        public Dictionary<string, ITemplateContentProvider> InputFiles { get; private set; }
 
         private LinkedList<InputLine> InputLines { get; set; }
 
@@ -128,21 +125,21 @@ namespace NHaml
             CurrentNode = CurrentNode.Next;
         }
 
-        public void MergeTemplate( string templatePath, bool replaceCurrentNode )
+        public void MergeTemplate( ITemplateContentProvider templatePath, bool replaceCurrentNode )
         {
 
             var previous = CurrentNode.Previous;
 
             var lineNumber = 0;
 
-            using( var reader = new StreamReader( templatePath ) )
+            using( var reader = templatePath.GetContentReader()  )
             {
                 string line;
 
                 while( (line = reader.ReadLine()) != null )
                 {
                     InputLines.AddBefore( CurrentNode,
-                      new InputLine( CurrentNode.Value.Indent + line, templatePath, lineNumber++, TemplateEngine.IndentSize ) );
+                      new InputLine( CurrentNode.Value.Indent + line, templatePath.Key, lineNumber++, TemplateEngine.IndentSize ) );
                 }
             }
             if (replaceCurrentNode)
@@ -152,7 +149,10 @@ namespace NHaml
             }
                 CurrentNode = previous.Next;
 
-            InputFiles.Add( templatePath );
+                if (!InputFiles.ContainsKey(templatePath.Key))
+                {
+                    InputFiles.Add( templatePath.Key,templatePath );
+                }
         }
 
         public void CloseBlocks()

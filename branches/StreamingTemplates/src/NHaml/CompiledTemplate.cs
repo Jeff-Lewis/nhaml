@@ -10,8 +10,8 @@ namespace NHaml
     {
         private readonly TemplateEngine _templateEngine;
 
-        private readonly string _templatePath;
-        private readonly IList<string> _layoutTemplatePaths;
+        private readonly ITemplateContentProvider _templatePath;
+        private readonly IList<ITemplateContentProvider> _layoutTemplatePaths;
 
         private readonly Type _templateBaseType;
 
@@ -22,8 +22,8 @@ namespace NHaml
 
         private readonly object _sync = new object();
 
-        internal CompiledTemplate( TemplateEngine templateEngine, string templatePath,
-          IList<string> layoutTemplatePaths, Type templateBaseType )
+        internal CompiledTemplate( TemplateEngine templateEngine, ITemplateContentProvider templatePath,
+          IList<ITemplateContentProvider> layoutTemplatePaths, Type templateBaseType )
         {
             _templateEngine = templateEngine;
             _templatePath = templatePath;
@@ -57,10 +57,9 @@ namespace NHaml
         private void Compile()
         {
             var templateClassBuilder = _templateEngine.TemplateCompiler.CreateTemplateClassBuilder(
-              Utility.MakeClassName( _templatePath ), _templateBaseType );
+              Utility.MakeClassName( _templatePath.Key ), _templateBaseType );
 
-            var templateParser = new TemplateParser(_templateEngine, templateClassBuilder,
-                                                               _layoutTemplatePaths, _templatePath);
+            var templateParser = new TemplateParser(_templateEngine, templateClassBuilder,_layoutTemplatePaths, _templatePath);
 
             templateParser.Parse();
 
@@ -93,9 +92,10 @@ namespace NHaml
 
             _templateFactory = _templateEngine.TemplateCompiler.Compile( templateParser );
 
-            foreach( var inputFile in templateParser.InputFiles )
+            foreach( var inputFile in templateParser.InputFiles.Values )
             {
-                _fileTimestamps[inputFile] = File.GetLastWriteTime( inputFile );
+
+                _fileTimestamps[inputFile.Key] = inputFile.GetLastWriteTime();
             }
         }
     }

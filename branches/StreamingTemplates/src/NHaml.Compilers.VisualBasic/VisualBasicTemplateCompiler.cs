@@ -18,13 +18,13 @@ namespace NHaml.Compilers.VisualBasic
         public TemplateFactory Compile( TemplateParser templateParser )
         {
             var templateSource = templateParser.TemplateClassBuilder.Build();
-            var typeBuilder = new VisualBasicTemplateTypeBuilder(templateParser.TemplateEngine);
+            var typeBuilder = new VisualBasicTemplateTypeBuilder {Usings = templateParser.TemplateEngine.Usings, References = templateParser.TemplateEngine.References};
             var templateType = typeBuilder.Build( templateSource, templateParser.TemplateClassBuilder.ClassName );
 
             if( templateType == null )
             {
                 TemplateCompilationException.Throw( typeBuilder.CompilerResults,
-                                                    typeBuilder.Source, templateParser.TemplatePath );
+                                                    typeBuilder.Source, templateParser.TemplateContentProvider.Key );
             }
 
             return new TemplateFactory( templateType );

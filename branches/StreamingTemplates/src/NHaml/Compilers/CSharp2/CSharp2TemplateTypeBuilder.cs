@@ -9,18 +9,16 @@ using Microsoft.CSharp;
 
 namespace NHaml.Compilers.CSharp2
 {
-    internal class CSharp2TemplateTypeBuilder
+    internal class CSharp2TemplateTypeBuilder : ITemplateTypeBuilder
     {
         private readonly CompilerParameters _compilerParameters
           = new CompilerParameters();
 
-        private readonly TemplateEngine _templateEngine;
 
         [SuppressMessage( "Microsoft.Security", "CA2122" )]
-        public CSharp2TemplateTypeBuilder( TemplateEngine templateEngine )
+        public CSharp2TemplateTypeBuilder( )
         {
             ProviderOptions = new Dictionary<string, string>();
-            _templateEngine = templateEngine;
 
             ProviderOptions.Add( "CompilerVersion", "v2.0" );
 
@@ -62,7 +60,7 @@ namespace NHaml.Compilers.CSharp2
         {
             _compilerParameters.ReferencedAssemblies.Clear();
 
-            foreach( var assembly in _templateEngine.References )
+            foreach( var assembly in References )
             {
                 _compilerParameters.ReferencedAssemblies.Add( assembly );
             }
@@ -72,7 +70,7 @@ namespace NHaml.Compilers.CSharp2
         {
             var sourceBuilder = new StringBuilder();
 
-            foreach( var usingStatement in _templateEngine.Usings )
+            foreach( var usingStatement in Usings )
             {
                 sourceBuilder.AppendLine( string.Format("using {0};", usingStatement) );
             }
@@ -81,5 +79,8 @@ namespace NHaml.Compilers.CSharp2
 
             Source = sourceBuilder.ToString();
         }
+
+        public IList<string> Usings { get; set; }
+        public IList<string> References { get; set; }
     }
 }

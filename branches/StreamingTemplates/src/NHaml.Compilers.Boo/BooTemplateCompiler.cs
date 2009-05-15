@@ -20,7 +20,7 @@ namespace NHaml.Compilers.Boo
         {
             var templateSource = templateParser.TemplateClassBuilder.Build();
 
-            var typeBuilder = new BooTemplateTypeBuilder( templateParser.TemplateEngine );
+            var typeBuilder = new BooTemplateTypeBuilder{Usings = templateParser.TemplateEngine.Usings, References = templateParser.TemplateEngine.References};
 
            // Debug.WriteLine(templateSource);
             var templateType = typeBuilder.Build( templateSource, templateParser.TemplateClassBuilder.ClassName );
@@ -28,7 +28,7 @@ namespace NHaml.Compilers.Boo
             if( templateType == null )
             {
                 TemplateCompilationException.Throw( typeBuilder.CompilerResults,
-                  typeBuilder.Source, templateParser.TemplatePath );
+                  typeBuilder.Source, templateParser.TemplateContentProvider.Key );
             }
 
             return new TemplateFactory( templateType );

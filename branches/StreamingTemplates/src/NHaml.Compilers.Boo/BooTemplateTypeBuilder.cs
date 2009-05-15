@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
@@ -10,18 +11,16 @@ using Boo.Lang.Parser;
 
 namespace NHaml.Compilers.Boo
 {
-    internal sealed class BooTemplateTypeBuilder
+    internal sealed class BooTemplateTypeBuilder : ITemplateTypeBuilder
     {
         private readonly BooCompiler _booCompiler;
 
-        private readonly TemplateEngine _templateEngine;
 
         [SuppressMessage( "Microsoft.Security", "CA2122" )]
-        public BooTemplateTypeBuilder( TemplateEngine templateEngine )
+        public BooTemplateTypeBuilder()
         {
             _booCompiler = new BooCompiler();
             CompilerResults = new CompilerResults( new TempFileCollection() );
-            _templateEngine = templateEngine;
 
             _booCompiler.Parameters.GenerateInMemory = true;
             _booCompiler.Parameters.Debug = true;
@@ -67,7 +66,7 @@ namespace NHaml.Compilers.Boo
         [SuppressMessage( "Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods" )]
         private void AddReferences()
         {
-            foreach(var assemblyFile in _templateEngine.References )
+            foreach(var assemblyFile in References )
             {
                 var assembly = Assembly.LoadFrom( assemblyFile );
 
@@ -75,11 +74,13 @@ namespace NHaml.Compilers.Boo
             }
         }
 
+        public IList<string> References { get; set; }
+
         private void BuildSource( string source )
         {
             var sourceBuilder = new StringBuilder();
 
-            foreach(var usingStatement in _templateEngine.Usings )
+            foreach(var usingStatement in Usings )
             {
                 sourceBuilder.AppendLine( "import " + usingStatement );
             }
@@ -88,5 +89,9 @@ namespace NHaml.Compilers.Boo
 
             Source = sourceBuilder.ToString();
         }
+
+        public IList<string> Usings { get; set; }
     }
+
+ 
 }

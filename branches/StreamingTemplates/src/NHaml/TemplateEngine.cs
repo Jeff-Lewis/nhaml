@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Web;
@@ -14,6 +15,7 @@ using NHaml.Utils;
 
 namespace NHaml
 {
+    public delegate TResult Func<T1,T2, TResult>(T1 arg1, T2 arg2);
     public sealed class TemplateEngine
     {
         private static readonly string[] DefaultAutoClosingTags
@@ -65,8 +67,27 @@ namespace NHaml
             AddRule( new CommentMarkupRule() );
             AddRule( new EscapeMarkupRule() );
             AddRule( new PartialMarkupRule() );
-
+            PartialContentCreator = GetPartial;
             Configure();
+        }
+
+        public Func<ITemplateContentProvider, string, ITemplateContentProvider> PartialContentCreator { get; set; }
+
+
+        public ITemplateContentProvider GetPartial(ITemplateContentProvider currentTemplate, string partialName)
+        {
+            //TODO: this is not ideat because it does not deal with non file based templates
+            var templateDirectory = Path.GetDirectoryName(currentTemplate.Key);
+
+            partialName = partialName.Insert(partialName.LastIndexOf(@"\", StringComparison.OrdinalIgnoreCase) + 1, "_");
+
+            var partialTemplatePath = Path.Combine(templateDirectory, partialName + ".haml");
+
+            if (!File.Exists(partialTemplatePath))
+            {
+                partialTemplatePath = Path.Combine(templateDirectory, @"..\" + partialName + ".haml");
+            }
+            return new FileTemplateContentProvider(partialTemplatePath);
         }
 
         private void Configure()
@@ -270,17 +291,24 @@ namespace NHaml
             return Compile(templatePath, layoutTemplatePaths, TemplateBaseType);
         }
 
-        public CompiledTemplate Compile( string templatePath, IList<string> layoutTemplatePaths, Type templateBaseType )
+        public CompiledTemplate Compile(string templatePath, IList<string> layoutTemplatePaths, Type templateBaseType)
         {
-            Invariant.ArgumentNotEmpty( templatePath, "templatePath" );
-            Invariant.FileExists( templatePath );
+            var providers = new List<ITemplateContentProvider>();
+            foreach (var path in layoutTemplatePaths)
+            {
+                providers.Add(new FileTemplateContentProvider(path));
+            }
+            return Compile(new FileTemplateContentProvider(templatePath), providers, templateBaseType);
+        }
+
+        public CompiledTemplate Compile( ITemplateContentProvider templateContentProvider, IList<ITemplateContentProvider> layoutTemplateContentProviders, Type templateBaseType )
+        {
             Invariant.ArgumentNotNull( templateBaseType, "templateBaseType" );
 
-            var templateCacheKey = new StringBuilder(templatePath );
-            
-            foreach (var layoutTemplatePath in layoutTemplatePaths)
+            var templateCacheKey = new StringBuilder(templateContentProvider.Key);
+
+            foreach (var layoutTemplatePath in layoutTemplateContentProviders)
             {
-                    Invariant.FileExists(layoutTemplatePath);
                 templateCacheKey.AppendFormat("{0}, ", layoutTemplatePath);
             }
 
@@ -291,7 +319,7 @@ namespace NHaml
                 var key = templateCacheKey.ToString();
                 if( !_compiledTemplateCache.TryGetValue( key, out compiledTemplate ) )
                 {
-                    compiledTemplate = new CompiledTemplate( this, templatePath, layoutTemplatePaths, templateBaseType );
+                    compiledTemplate = new CompiledTemplate( this, templateContentProvider, layoutTemplateContentProviders, templateBaseType );
 
                     _compiledTemplateCache.Add( key, compiledTemplate );
                 }

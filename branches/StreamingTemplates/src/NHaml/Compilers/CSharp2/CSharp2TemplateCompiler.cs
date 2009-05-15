@@ -19,16 +19,19 @@ namespace NHaml.Compilers.CSharp2
         public TemplateFactory Compile( TemplateParser templateParser )
         {
             var templateSource = templateParser.TemplateClassBuilder.Build();
-            var typeBuilder = CreateTemplateTypeBuilder( templateParser.TemplateEngine );
-            var templateType = typeBuilder.Build( templateSource, templateParser.TemplateClassBuilder.ClassName );
+            var typeBuilder = CreateTemplateTypeBuilder();
 
-            if( templateType == null )
+            typeBuilder.References = templateParser.TemplateEngine.References;
+            typeBuilder.Usings = templateParser.TemplateEngine.Usings;
+            var templateType = typeBuilder.Build(templateSource, templateParser.TemplateClassBuilder.ClassName);
+
+            if (templateType == null)
             {
-                TemplateCompilationException.Throw( typeBuilder.CompilerResults,
-                  typeBuilder.Source, templateParser.TemplatePath );
+                TemplateCompilationException.Throw(typeBuilder.CompilerResults,
+                                                   typeBuilder.Source, templateParser.TemplateContentProvider.Key);
             }
 
-            return new TemplateFactory( templateType );
+            return new TemplateFactory(templateType);
         }
 
         public BlockClosingAction RenderSilentEval( TemplateParser templateParser )
@@ -78,9 +81,9 @@ namespace NHaml.Compilers.CSharp2
             return string.Format("{0}{1}delegate{2}{{", part0, part1, part2);
         }
 
-        internal virtual CSharp2TemplateTypeBuilder CreateTemplateTypeBuilder( TemplateEngine templateEngine )
+        internal virtual CSharp2TemplateTypeBuilder CreateTemplateTypeBuilder(  )
         {
-            return new CSharp2TemplateTypeBuilder( templateEngine );
+            return new CSharp2TemplateTypeBuilder();
         }
     }
 }

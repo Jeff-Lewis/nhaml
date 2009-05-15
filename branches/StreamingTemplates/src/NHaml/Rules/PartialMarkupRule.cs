@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-
 using NHaml.Properties;
 
 namespace NHaml.Rules
@@ -28,7 +26,7 @@ namespace NHaml.Rules
                     throw new InvalidOperationException(Resources.NoPartialName);
                 }
                 var templatePath = templateParser.MergedTemplatePaths[templateParser.CurrentTemplateIndex+1];
-                if (string.IsNullOrEmpty(templatePath))
+                if (templatePath == null)
                 {
                     throw new InvalidOperationException(Resources.NoPartialName);
                 }
@@ -37,18 +35,8 @@ namespace NHaml.Rules
             }
             else
             {
-                var templateDirectory = Path.GetDirectoryName( templateParser.TemplatePath);
-
-                partialName = partialName.Insert( partialName.LastIndexOf( @"\", StringComparison.OrdinalIgnoreCase ) + 1, "_" );
-
-                var partialTemplatePath = Path.Combine( templateDirectory, partialName + ".haml" );
-
-                if( !File.Exists( partialTemplatePath ) )
-                {
-                    partialTemplatePath = Path.Combine( templateDirectory, @"..\" + partialName + ".haml" );
-                }
-
-                templateParser.MergeTemplate( partialTemplatePath, true );
+                var partialProvider = templateParser.TemplateEngine.GetPartial(templateParser.TemplateContentProvider, partialName);
+                templateParser.MergeTemplate(partialProvider, true);
             }
 
             return null;

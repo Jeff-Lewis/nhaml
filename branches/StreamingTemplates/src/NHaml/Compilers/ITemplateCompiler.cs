@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace NHaml.Compilers
 {
@@ -8,5 +9,10 @@ namespace NHaml.Compilers
         BlockClosingAction RenderSilentEval( TemplateParser templateParser );
         TemplateClassBuilder CreateTemplateClassBuilder( string className, Type templateBaseType );
 
+    }
+    public interface ITemplateTypeBuilder
+    {
+        IList<string> Usings { get; set; }
+        IList<string> References { get; set; }
     }
 }

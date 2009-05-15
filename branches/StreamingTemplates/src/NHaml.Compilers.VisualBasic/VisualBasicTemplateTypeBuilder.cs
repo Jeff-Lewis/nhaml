@@ -8,20 +8,16 @@ using Microsoft.VisualBasic;
 
 namespace NHaml.Compilers.VisualBasic
 {
-    internal class VisualBasicTemplateTypeBuilder
+    internal class VisualBasicTemplateTypeBuilder:ITemplateTypeBuilder
     {
         private readonly CompilerParameters _compilerParameters
             = new CompilerParameters();
 
-        private readonly TemplateEngine _templateEngine;
-
         [SuppressMessage( "Microsoft.Security", "CA2122" )]
-        public VisualBasicTemplateTypeBuilder( TemplateEngine templateEngine )
+        public VisualBasicTemplateTypeBuilder(  )
         {
 
             ProviderOptions = new Dictionary<string, string>();
-            _templateEngine = templateEngine;
-            _templateEngine.AddReference(GetType().Assembly);
 
             ProviderOptions.Add("CompilerVersion", "v3.5");
 
@@ -39,6 +35,7 @@ namespace NHaml.Compilers.VisualBasic
         [SuppressMessage( "Microsoft.Portability", "CA1903" )]
         public Type Build( string source, string typeName )
         {
+            References.Add(GetType().Assembly.Location);
             BuildSource( source );
 
             Trace.WriteLine( Source );
@@ -63,7 +60,7 @@ namespace NHaml.Compilers.VisualBasic
         {
             _compilerParameters.ReferencedAssemblies.Clear();
 
-            foreach( var assembly in _templateEngine.References )
+            foreach( var assembly in References )
             {
                 _compilerParameters.ReferencedAssemblies.Add( assembly );
             }
@@ -73,7 +70,7 @@ namespace NHaml.Compilers.VisualBasic
         {
             var sourceBuilder = new StringBuilder();
 
-            foreach( var usingStatement in _templateEngine.Usings )
+            foreach( var usingStatement in Usings )
             {
                 sourceBuilder.AppendLine("Imports " + usingStatement);
             }
@@ -82,5 +79,8 @@ namespace NHaml.Compilers.VisualBasic
 
             Source = sourceBuilder.ToString();
         }
+
+        public IList<string> Usings { get; set; }
+        public IList<string> References { get; set; }
     }
 }
