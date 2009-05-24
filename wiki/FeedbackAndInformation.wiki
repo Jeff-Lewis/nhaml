@@ -1,3 +1,5 @@
+#summary How to provide feedback and get information
+
 =Providing Feedback=
 
  * Raising bugs use the project issues page http://code.google.com/p/nhaml/issues/list
