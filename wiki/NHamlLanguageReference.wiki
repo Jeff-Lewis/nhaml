@@ -195,20 +195,6 @@ and is compiled to:
 </div>
 }}}
 
-=Evaluate C# Output '`=`'=
-
-'`=`' is placed at the end of a tag definition, after class, id, and attribute declarations. It‘s just a shortcut for inserting C# code into an element. It works the same as = without a tag: it inserts the result of the C# code into the template.
-
-{{{
-%p= string.Join(" ", new string[]{"He", "braid", "runner!"})
-}}}
-
-Results in:
-
-{{{
-<p>He braid runner!</p>
-}}}
-
 =No Special Character=
 
 If no special character appears at the beginning of a line, the line is rendered as plain text. For example:
@@ -419,7 +405,7 @@ An `_` on it”s own is used to specify where the content within a layout will b
 
 
 =Evaluate Output '`=`'=
-The '`=`' character is followed by C# code, which is evaluated and the output inserted into the document as plain text. For example:
+The '`=`' character is followed by code, which is evaluated and the output inserted into the document as plain text. For example (using C#):
 
 {{{
 %p
@@ -434,6 +420,33 @@ is compiled to:
   hi there reader!
   yo
 </p>
+}}}
+
+When '`=`' is placed at the end of a tag definition, after class, id, and attribute declarations. It‘s just a shortcut for inserting code into an element. It works the same as = without a tag: it inserts the result of the code into the template. For example (using C#):
+
+{{{
+%p= string.Join(" ", new string[]{"He", "braid", "runner!"})
+}}}
+
+Results in:
+
+{{{
+<p>He braid runner!</p>
+}}}
+
+=HTML Encode Output '`&=`'=
+The '`&=`' string is followed by code, which is evaluated and the output inserted into the document after being HTML encoded. For example (using C#):
+
+{{{
+&= "LessThan <"
+&= "GreaterThan >"
+}}}
+
+is compiled to:
+
+{{{
+LessThan &lt;
+GreaterThan &gt;
 }}}
 
 =Evaluate Silent '-'=
