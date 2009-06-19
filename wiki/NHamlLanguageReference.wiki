@@ -2,6 +2,8 @@
 
 * Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
 
+* Note: All examples where code is used are in C# unless specified otherwise *
+
 Disclaimer: Most of this reference was lifted from the main Haml site.
 
 =Tags '%'=
@@ -405,7 +407,7 @@ An `_` on it”s own is used to specify where the content within a layout will b
 
 
 =Evaluate Output '`=`'=
-The '`=`' character is followed by code, which is evaluated and the output inserted into the document as plain text. For example (using C#):
+The '`=`' character is followed by code, which is evaluated and the output inserted into the document as plain text. For example:
 
 {{{
 %p
@@ -422,7 +424,7 @@ is compiled to:
 </p>
 }}}
 
-When '`=`' is placed at the end of a tag definition, after class, id, and attribute declarations. It‘s just a shortcut for inserting code into an element. It works the same as = without a tag: it inserts the result of the code into the template. For example (using C#):
+When '`=`' is placed at the end of a tag definition, after class, id, and attribute declarations. It‘s just a shortcut for inserting code into an element. It works the same as = without a tag: it inserts the result of the code into the template. For example:
 
 {{{
 %p= string.Join(" ", new string[]{"He", "braid", "runner!"})
@@ -435,7 +437,7 @@ Results in:
 }}}
 
 =HTML Encode Output '`&=`'=
-The '`&=`' string is followed by code, which is evaluated and the output inserted into the document after being HTML encoded. For example (using C#):
+The '`&=`' string is followed by code, which is evaluated and the output inserted into the document after being HTML encoded. For example:
 
 {{{
 &= "LessThan <"
@@ -451,7 +453,7 @@ GreaterThan &gt;
 
 =Evaluate Silent '-'=
 
-The '-' character makes the text following it into “silent” code: C# code that is evaluated, but not output.
+The '-' character makes the text following it into “silent” code: code that is evaluated, but not output.
 
 It is not recommended that you use this widely; almost all processing code and logic should be restricted to the Controller, Helpers, or partials.
 
@@ -474,7 +476,7 @@ is compiled to:
 
 =Code Blocks=
 
-C# code blocks, like XHTML tags, don‘t need to be explicitly closed in NHaml. Rather, they‘re automatically closed, based on indentation. A block begins whenever the indentation is increased after a silent script command. It ends when the indentation decreases.
+Code blocks, like XHTML tags, don‘t need to be explicitly closed in NHaml. Rather, they‘re automatically closed, based on indentation. A block begins whenever the indentation is increased after a silent script command. It ends when the indentation decreases.
 
 {{{
 - for (int i=42; i<47; i++)
@@ -504,7 +506,7 @@ is compiled to:
 }}}
 
 =Silent Comments '-//'=
-The hyphen followed immediately by a C# comment has the effect of a silent comment. Any text following this isn‘t rendered in the resulting document at all.
+The hyphen followed immediately by a code comment has the effect of a silent comment. Any text following this isn‘t rendered in the resulting document at all.
 
 For example:
 
