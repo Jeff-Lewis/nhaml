@@ -451,6 +451,26 @@ LessThan &lt;
 GreaterThan &gt;
 }}}
 
+
+=Not HTML Encode Output '`!=`'=
+
+The '!=' string will result in the output never being html encoded.
+
+By default, the single equals doesn‘t sanitize HTML either. However, if the EncodeHtml option is set, = will sanitize the HTML, but != still won‘t. For example, if EncodeHtml is set: 
+
+{{{
+= "I feel <strong>!"
+!= "I feel <strong>!"compiles to 
+}}}
+
+is compiled to: 
+
+{{{
+I feel &lt;strong&gt;!
+I feel <strong>!
+}}}
+
+
 =Evaluate Silent '-'=
 
 The '-' character makes the text following it into “silent” code: code that is evaluated, but not output.
