@@ -47,3 +47,10 @@ This controls the temaplte compiler that will be used for the inline code used i
   * NHaml.Compilers.Boo.BooTemplateCompiler, NHaml.Compilers.Boo
   * NHaml.Compilers.FSharp.FSharpTemplateCompiler, NHaml.Compilers.FSharp
  
+= useTabs =
+
+nhaml is a indentation sensitive lanugage. i.e. the level of indentation is used to control logic. The _useTabs_ setting is used to define what type of indentation character to use.
+
+_true_ to use tabs _false_ (or non-existant) for spaces.
+
+= indentSize = 
