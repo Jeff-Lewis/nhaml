@@ -1,0 +1,36 @@
+#summary How to configure NHaml.
+
+* Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
+= Introduction =
+
+An example App.config for nhaml.
+
+= autoRecompile =
+
+NHaml views are compiled. The first time an NHaml view is requested it is parsed and compiled into a .NET Type capable of rendering the view. This Type is then cached. The view engine can then be set to autoRecompile. When autoRecompile is set to true the view engine will always recompile a view . When autoRecompile is set to false the view engine will only recompile a cached view if any of it's constituent haml files are modified. autoRecompile may be enabled through the web.config file like so:
+
+{{{
+
+<?xml version="1.0"?>
+
+<configuration>
+
+	<configSections>
+		<section name="nhaml" type="NHaml.Configuration.NHamlConfigurationSection, NHaml"/>
+	</configSections>
+
+  <nhaml autoRecompile="false" templateCompiler="CSharp3" encodeHtml="false" useTabs="false" indentSize="2">
+		<assemblies>
+			<clear/>
+			<add assembly="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+		</assemblies>
+		<namespaces>
+			<clear/>
+			<add namespace="System.Collections"/>
+		</namespaces>
+	</nhaml>
+
+</configuration>
+
+}}}
