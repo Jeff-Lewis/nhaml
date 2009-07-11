@@ -56,6 +56,7 @@ D:\Code\MVCSite\bin\nhamltemp
 = Stepping Through Template Code =
 
 * Execute the template at least once. This will cause a file for that template to be save to the nhamltemp directory. *
+
 * Open the file in Visual Studio and add a breakpoint on the desired line *
 
 [http://nhaml.googlecode.com/svn/wiki/BreakPoint.gif]
