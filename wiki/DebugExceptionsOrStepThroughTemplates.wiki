@@ -1,5 +1,9 @@
 #summary How to debug exceptions or step through templates.
 
+* Note: All examples are based on the latest version of NHaml. Check the [GettingNHaml] for information about getting the latest version. *
+
+* Note: All examples where code is used are in C# unless specified otherwise *
+
 = Enable template debugging =
 
 * Set the config setting *
