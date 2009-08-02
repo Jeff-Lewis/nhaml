@@ -20,4 +20,4 @@ The latest build will be at this permalink
 
 http://teamcity.codebetter.com/viewLog.html?buildId=lastSuccessful&buildTypeId=bt43&tab=artifacts
 
-Not that these builds, while passing all tests, may not be as stable as those taken from the Downloads page. They will however have all the latets bug fixes and features.
+Not that these builds, while passing all tests, may not be as stable as those taken from the Downloads page. They will however have all the latest bug fixes and features.
