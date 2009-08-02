@@ -54,3 +54,9 @@ nhaml is a indentation sensitive lanugage. i.e. the level of indentation is used
 _true_ to use tabs _false_ (or non-existant) for spaces.
 
 = indentSize = 
+
+The number of tabs or spaces to indicate an indent.
+
+= outputDebugFiles =
+
+Used to output temporary source code files for debugging purposes.See [DebugExceptionsOrStepThroughTemplates]
