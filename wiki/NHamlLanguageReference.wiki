@@ -494,6 +494,23 @@ is compiled to:
 </p>
 }}}
 
+
+=Universal interpolation=
+
+Code can be embedded in text throught he use of #{}. For example:
+
+{{{
+%p This is a really cool #{h what_is_this}!
+But is it a #{h what_isnt_this}?
+}}}
+
+In addition, to escape or unescape the interpolated code, you can just add & or !, respectively, to the beginning of the line:
+
+{{{
+%p& This is a really cool #{what_is_this}!
+& But is it a #{what_isnt_this}?
+}}}
+
 =Code Blocks=
 
 Code blocks, like XHTML tags, don‘t need to be explicitly closed in NHaml. Rather, they‘re automatically closed, based on indentation. A block begins whenever the indentation is increased after a silent script command. It ends when the indentation decreases.
