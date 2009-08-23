@@ -451,6 +451,17 @@ LessThan &lt;
 GreaterThan &gt;
 }}}
 
+'`&`' can also be used on its own so that #{} interpolation is escaped. For example,
+
+{{{
+& I like #{"cheese & crackers"}
+}}}
+
+is compiled to:
+
+{{{
+I like cheese &amp; crackers
+}}}
 
 =Not HTML Encode Output '`!=`'=
 
@@ -460,7 +471,7 @@ By default, the single equals doesn‘t sanitize HTML either. However, if the En
 
 {{{
 = "I feel <strong>!"
-!= "I feel <strong>!"compiles to 
+!= "I feel <strong>!"
 }}}
 
 is compiled to: 
@@ -470,6 +481,17 @@ I feel &lt;strong&gt;!
 I feel <strong>!
 }}}
 
+'!' can also be used on its own so that #{} interpolation is unescaped. For example,
+
+{{{
+! I feel #{"<strong>"}!
+}}}
+
+is compiled to: 
+
+{{{
+I feel <strong>!
+}}}
 
 =Evaluate Silent '-'=
 
