@@ -4,7 +4,7 @@
 
  * Raising bugs use the project issues page http://code.google.com/p/nhaml/issues/list
  * Request features on the User Voice page http://nhaml.uservoice.com
- * Send an email to the group nhaml-users@googlegroups.com 
+ * Send an email to the group mailto://nhaml-users@googlegroups.com 
 
 =Getting Information=
 
