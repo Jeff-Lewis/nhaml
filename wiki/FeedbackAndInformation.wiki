@@ -10,4 +10,4 @@
 
  * Look through project wikipages http://code.google.com/p/nhaml/w/list
  * Ask a question on Stack Overflow http://stackoverflow.com/search?q=nhaml
- * Send an email to the group nhaml-users@googlegroups.com 
+ * Send an email to the mailto://group nhaml-users@googlegroups.com 
