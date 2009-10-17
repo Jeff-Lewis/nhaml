@@ -23,16 +23,29 @@ The location for these source files derived from the location of
 {{{
 Assembly.GetExecutingAssembly() 
 }}}
-suffixed with *nhamltemp*
+{{{
+Path.GetTempPath()
+}}}
+and *nhamltemp*
 
 So, for example, if your app bin is 
 {{{
-D:\Code\MVCSite\bin
+C:\Code\MVCSite\bin
+}}}
+And your temp path is
+{{{
+C:\Temp
 }}}
 Your nhaml temp directory will be in
 {{{
-D:\Code\MVCSite\bin\nhamltemp
+C:\Temp\nhamlTemp\C_Code_MVCSite_bin
 }}}
+
+The path will also be written to Debug using 
+{{{
+Debug.WriteLine()
+}}}
+
 
 
 = Diagnosing a Template Exception =
